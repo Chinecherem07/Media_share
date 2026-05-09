@@ -24,14 +24,10 @@ jobs:
 
       - name: Prepare Package
         run: |
-          # 1. Create a clean folder
           mkdir -p output
-          
-          # 2. Copy standalone files (server.js and its node_modules)
-          # The trailing /. is important to copy contents, not the folder itself
+          # Copy standalone server and its node_modules
           cp -r .next/standalone/. output/
-          
-          # 3. Copy static assets into the .next folder structure
+          # Copy static and public assets
           mkdir -p output/.next/static
           cp -r .next/static/. output/.next/static/
           cp -r public output/public
@@ -41,7 +37,7 @@ jobs:
         with:
           name: node-app
           path: output
-          include-hidden-files: true # ✅ Required for the .next folder
+          include-hidden-files: true
 
   deploy:
     runs-on: ubuntu-latest
@@ -51,12 +47,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
-          # No path set here ensures it downloads to the current workspace root
+          path: deploy-package # ✅ Force extraction into a specific folder
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'mediashareminimal'
           slot-name: 'Production'
-          package: . # ✅ Deploys the current directory contents directly to Azure
+          package: ./deploy-package # ✅ Tell Azure to deploy the CONTENTS of this folder
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0FA04866BD3445DBA23195F50B17AADB }}
