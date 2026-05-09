@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 8080",
+    "start": "PORT=8080 node server.js",
     "lint": "eslint"
   },
   "dependencies": {
