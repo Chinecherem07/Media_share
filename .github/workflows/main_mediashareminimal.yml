@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -25,9 +24,7 @@ jobs:
       - name: Prepare Package
         run: |
           mkdir -p output
-          # Copy standalone server and its node_modules
           cp -r .next/standalone/. output/
-          # Copy static and public assets
           mkdir -p output/.next/static
           cp -r .next/static/. output/.next/static/
           cp -r public output/public
@@ -47,12 +44,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
-          path: deploy-package # ✅ Force extraction into a specific folder
+          path: deploy-package 
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'mediashareminimal'
           slot-name: 'Production'
-          package: ./deploy-package # ✅ Tell Azure to deploy the CONTENTS of this folder
+          package: ./deploy-package 
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0FA04866BD3445DBA23195F50B17AADB }}
